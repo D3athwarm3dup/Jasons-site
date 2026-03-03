@@ -1,0 +1,103 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+}
+
+model AdminUser {
+  id           String   @id @default(cuid())
+  email        String   @unique
+  passwordHash String
+  name         String
+  createdAt    DateTime @default(now())
+}
+
+model Project {
+  id               String            @id @default(cuid())
+  title            String
+  slug             String            @unique
+  description      String
+  location         String
+  category         String
+  completedAt      DateTime
+  published        Boolean           @default(false)
+  featured         Boolean           @default(false)
+  // SEO fields
+  metaTitle        String?           // custom <title> tag (falls back to title)
+  metaDescription  String?           // custom meta description (falls back to description)
+  metaKeywords     String?           // comma-separated keywords
+  createdAt        DateTime          @default(now())
+  updatedAt        DateTime          @updatedAt
+  images           ProjectImage[]
+  feedbackRequests FeedbackRequest[]
+  feedback         Feedback[]
+}
+
+model ProjectImage {
+  id        String  @id @default(cuid())
+  projectId String
+  project   Project @relation(fields: [projectId], references: [id], onDelete: Cascade)
+  url       String
+  alt       String  @default("")
+  isPrimary Boolean @default(false)
+  order     Int     @default(0)
+  // Role: "before" | "after" | "gallery". Enables the before/after slider on project pages.
+  role      String  @default("gallery")
+}
+
+model FeedbackRequest {
+  id          String    @id @default(cuid())
+  projectId   String
+  project     Project   @relation(fields: [projectId], references: [id], onDelete: Cascade)
+  token       String    @unique
+  clientName  String?
+  clientEmail String?
+  used        Boolean   @default(false)
+  createdAt   DateTime  @default(now())
+  feedback    Feedback?
+}
+
+model Feedback {
+  id                String           @id @default(cuid())
+  projectId         String
+  project           Project          @relation(fields: [projectId], references: [id], onDelete: Cascade)
+  feedbackRequestId String?          @unique
+  feedbackRequest   FeedbackRequest? @relation(fields: [feedbackRequestId], references: [id])
+  clientName        String
+  rating            Int
+  comment           String
+  approved          Boolean          @default(false)
+  createdAt         DateTime         @default(now())
+}
+
+model GalleryImage {
+  id        String   @id @default(cuid())
+  url       String
+  alt       String   @default("")
+  category  String   @default("general")
+  order     Int      @default(0)
+  createdAt DateTime @default(now())
+}
+
+model ContactSubmission {
+  id        String   @id @default(cuid())
+  name      String
+  email     String?
+  phone     String?
+  service   String?
+  message   String
+  read      Boolean  @default(false)
+  createdAt DateTime @default(now())
+}
+
+// Site-wide settings stored as key/value pairs
+model SiteSettings {
+  key       String   @id
+  value     String
+  updatedAt DateTime @updatedAt
+}
