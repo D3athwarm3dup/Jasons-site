@@ -2,7 +2,7 @@ import Link from "next/link";
 
 export default function CTASection() {
   return (
-    <section className="py-20 bg-[#8B5E3C]">
+    <section className="py-14 sm:py-20 bg-[#8B5E3C]">
       <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
         <p className="text-[#E8DDD0] text-sm font-semibold tracking-[0.3em] uppercase mb-4">
           Ready to Get Started?

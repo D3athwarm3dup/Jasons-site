@@ -1,12 +1,41 @@
 import Image from "next/image";
 import Link from "next/link";
+import { unstable_noStore } from "next/cache";
+import { prisma } from "@/lib/prisma";
 
-export default function HeroSection() {
+const DEFAULTS = {
+  hero_bg_image: "/homeBG.jpg",
+  hero_label: "Adelaide & Surrounds",
+  hero_heading_line1: "Custom Decks",
+  hero_heading_highlight: "& Sheds",
+  hero_heading_line2: "Built Right.",
+  hero_body:
+    "Premium craftsmanship, honest pricing, and lasting results. Jason Norris builds decks and sheds you'll be proud of for years to come.",
+  hero_stat1_value: "200+",
+  hero_stat1_label: "Projects Completed",
+  hero_stat2_value: "10+",
+  hero_stat2_label: "Years Experience",
+  hero_stat3_value: "5★",
+  hero_stat3_label: "Average Rating",
+};
+
+export default async function HeroSection() {
+  unstable_noStore();
+  const rows = await prisma.siteSettings.findMany();
+  const s = Object.fromEntries(rows.map((r: { key: string; value: string }) => [r.key, r.value])) as Partial<typeof DEFAULTS>;
+  const t = { ...DEFAULTS, ...s };
+
+  const stats = [
+    { value: t.hero_stat1_value, label: t.hero_stat1_label },
+    { value: t.hero_stat2_value, label: t.hero_stat2_label },
+    { value: t.hero_stat3_value, label: t.hero_stat3_label },
+  ];
+
   return (
-    <section className="relative min-h-[92vh] flex items-center overflow-hidden bg-[#2C2C2C]">
+    <section className="relative min-h-[85vh] sm:min-h-[92vh] flex items-center overflow-hidden bg-[#2C2C2C]">
       {/* Background photo */}
       <Image
-        src="/homeBG.jpg"
+        src={t.hero_bg_image}
         alt="Norris Decking background"
         fill
         className="object-cover object-center"
@@ -33,21 +62,20 @@ export default function HeroSection() {
         aria-hidden="true"
       />
 
-      <div className="relative z-20 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-24">
+      <div className="relative z-20 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16 sm:py-24">
         <div className="max-w-2xl">
           <p className="text-[#C4936A] text-sm font-semibold tracking-[0.3em] uppercase mb-4">
-            Adelaide & Surrounds
+            {t.hero_label}
           </p>
-          <h1 className="text-5xl sm:text-6xl lg:text-7xl font-bold text-white leading-tight mb-6 font-[var(--font-heading)]">
-            Custom Decks
+          <h1 className="text-4xl sm:text-6xl lg:text-7xl font-bold text-white leading-tight mb-6 font-[var(--font-heading)]">
+            {t.hero_heading_line1}
             <br />
-            <span className="text-[#C4936A]">&amp; Sheds</span>
+            <span className="text-[#C4936A]">{t.hero_heading_highlight}</span>
             <br />
-            Built Right.
+            {t.hero_heading_line2}
           </h1>
-          <p className="text-lg text-[#E8DDD0] leading-relaxed mb-10 max-w-lg">
-            Premium craftsmanship, honest pricing, and lasting results. Jason
-            Norris builds decks and sheds you&apos;ll be proud of for years to come.
+          <p className="text-base sm:text-lg text-[#E8DDD0] leading-relaxed mb-8 sm:mb-10 max-w-lg">
+            {t.hero_body}
           </p>
           <div className="flex flex-wrap gap-4">
             <Link
@@ -65,12 +93,8 @@ export default function HeroSection() {
           </div>
 
           {/* Trust indicators */}
-          <div className="flex flex-wrap gap-8 mt-14 pt-10 border-t border-white/20">
-            {[
-              { value: "200+", label: "Projects Completed" },
-              { value: "10+", label: "Years Experience" },
-              { value: "5★", label: "Average Rating" },
-            ].map((stat) => (
+          <div className="flex flex-wrap gap-6 sm:gap-8 mt-10 sm:mt-14 pt-8 sm:pt-10 border-t border-white/20">
+            {stats.map((stat) => (
               <div key={stat.label}>
                 <div className="text-3xl font-bold text-[#C4936A] font-[var(--font-heading)]">
                   {stat.value}

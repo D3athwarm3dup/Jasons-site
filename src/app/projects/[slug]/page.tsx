@@ -1,7 +1,7 @@
 import { notFound } from "next/navigation";
 import { Metadata } from "next";
 import Image from "next/image";
-import Navbar from "@/components/Navbar";
+import Navbar from "@/components/NavbarServer";
 import Footer from "@/components/Footer";
 import CTASection from "@/components/CTASection";
 import BeforeAfterSlider from "@/components/BeforeAfterSlider";
@@ -139,8 +139,8 @@ export default async function ProjectPage({
               <BeforeAfterSlider
                 beforeUrl={beforeImage!.url}
                 afterUrl={afterImage!.url}
-                beforeAlt={beforeImage!.alt || `${project.title} — Before`}
-                afterAlt={afterImage!.alt || `${project.title} — After`}
+                beforeAlt={beforeImage!.alt || `${project.title} - Before`}
+                afterAlt={afterImage!.alt || `${project.title} - After`}
                 className="w-full h-full"
               />
             </>
@@ -229,7 +229,7 @@ export default async function ProjectPage({
                             &ldquo;{review.comment}&rdquo;
                           </blockquote>
                           <p className="mt-3 text-sm font-semibold text-[#8C8277]">
-                            — {review.clientName}
+                            {review.clientName}
                           </p>
                         </div>
                       ))}

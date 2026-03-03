@@ -5,8 +5,11 @@ import { useState, useEffect } from "react";
 interface Settings {
   site_meta_title?: string;
   site_meta_description?: string;
+  site_meta_keywords?: string;
   google_analytics_id?: string;
   google_site_verification?: string;
+  google_place_id?: string;
+  google_places_api_key?: string;
 }
 
 const FIELDS: { key: keyof Settings; label: string; placeholder: string; hint?: string; textarea?: boolean }[] = [
@@ -24,6 +27,13 @@ const FIELDS: { key: keyof Settings; label: string; placeholder: string; hint?: 
     textarea: true,
   },
   {
+    key: "site_meta_keywords",
+    label: "Meta Keywords",
+    placeholder: "decking Adelaide, custom sheds Adelaide, deck builder Adelaide",
+    hint: "Comma-separated keywords. Not a major ranking factor but can help with some search engines. Example: decking Adelaide, shed builder, custom pergolas",
+    textarea: true,
+  },
+  {
     key: "google_analytics_id",
     label: "Google Analytics ID",
     placeholder: "G-XXXXXXXXXX",
@@ -34,6 +44,18 @@ const FIELDS: { key: keyof Settings; label: string; placeholder: string; hint?: 
     label: "Google Search Console Verification",
     placeholder: "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx",
     hint: 'The content value from the <meta name="google-site-verification"> tag. Paste only the value, not the whole tag.',
+  },
+  {
+    key: "google_place_id",
+    label: "Google Place ID",
+    placeholder: "ChIJN1t_tDeuEmsRUsoyG83frY4",
+    hint: "Your Google Maps Place ID. Find it at: maps.google.com → search your business → Share → copy the URL and extract the place_id= parameter.",
+  },
+  {
+    key: "google_places_api_key",
+    label: "Google Places API Key",
+    placeholder: "AIzaSy...",
+    hint: "A Google Cloud API key with the Places API enabled. Used to pull your latest Google Reviews onto the homepage. Keep this private.",
   },
 ];
 
@@ -110,7 +132,7 @@ export default function AdminSEOPage() {
             <p className="text-xs text-[#8C8277] mt-0.5">Default title and description used when a page has no custom values set.</p>
           </div>
           <div className="p-6 space-y-5">
-            {FIELDS.filter((f) => ["site_meta_title", "site_meta_description"].includes(f.key)).map((field) => (
+            {FIELDS.filter((f) => ["site_meta_title", "site_meta_description", "site_meta_keywords"].includes(f.key)).map((field) => (
               <FormField key={field.key} field={field} value={settings[field.key] ?? ""} onChange={(v) => set(field.key, v)} />
             ))}
           </div>
@@ -126,6 +148,31 @@ export default function AdminSEOPage() {
             {FIELDS.filter((f) => ["google_analytics_id", "google_site_verification"].includes(f.key)).map((field) => (
               <FormField key={field.key} field={field} value={settings[field.key] ?? ""} onChange={(v) => set(field.key, v)} />
             ))}
+          </div>
+        </section>
+
+        {/* Google Reviews */}
+        <section className="bg-white rounded-xl border border-[#E8DDD0] overflow-hidden">
+          <div className="px-6 py-4 border-b border-[#E8DDD0] bg-[#FAF5EE]">
+            <h2 className="font-semibold text-[#2C2C2C]">Google Reviews</h2>
+            <p className="text-xs text-[#8C8277] mt-0.5">
+              When both fields are filled in, your latest Google Reviews will automatically appear alongside your site testimonials on the homepage, rotating every 40 seconds.
+            </p>
+          </div>
+          <div className="p-6 space-y-5">
+            {FIELDS.filter((f) => ["google_place_id", "google_places_api_key"].includes(f.key)).map((field) => (
+              <FormField key={field.key} field={field} value={settings[field.key] ?? ""} onChange={(v) => set(field.key, v)} />
+            ))}
+            <div className="bg-amber-50 border border-amber-200 rounded-lg p-4 text-xs text-amber-800 space-y-1">
+              <p className="font-semibold">How to set this up</p>
+              <ol className="list-decimal list-inside space-y-1">
+                <li>Go to <a href="https://console.cloud.google.com" target="_blank" rel="noopener noreferrer" className="underline">Google Cloud Console</a> → enable the <strong>Places API</strong>.</li>
+                <li>Create an API Key under Credentials, restrict it to your domain and the Places API for security.</li>
+                <li>Find your Place ID: go to <a href="https://developers.google.com/maps/documentation/places/web-service/place-id" target="_blank" rel="noopener noreferrer" className="underline">Place ID Finder</a>, search for &ldquo;Norris Decking and Sheds&rdquo; and copy the ID.</li>
+                <li>Paste both values above and save. Google reviews will appear on the homepage within a few minutes.</li>
+              </ol>
+              <p className="mt-1 text-amber-700">Google limits Place Details to the 5 most relevant reviews.</p>
+            </div>
           </div>
         </section>
 

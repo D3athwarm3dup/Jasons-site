@@ -177,7 +177,6 @@ export default async function DashboardPage() {
               { href: "/admin/projects/new", label: "Add New Project", icon: "➕", desc: "Post a completed project" },
               { href: "/admin/feedback", label: "Review Feedback", icon: "⭐", desc: "Approve pending client reviews" },
               { href: "/admin/enquiries", label: "Check Enquiries", icon: "📩", desc: "View new contact form submissions" },
-              { href: "/admin/gallery", label: "Manage Gallery", icon: "🖼️", desc: "Upload & organise images" },
             ].map((action) => (
               <Link
                 key={action.href}

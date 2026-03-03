@@ -3,7 +3,9 @@
 import { useState, useEffect } from "react";
 
 interface Settings {
+  business_logo?: string;
   business_name?: string;
+  business_tagline?: string;
   business_abn?: string;
   business_licence?: string;
   business_phone?: string;
@@ -29,7 +31,7 @@ const SECTIONS: { title: string; description: string; keys: (keyof Settings)[] }
   {
     title: "Registration & Licensing",
     description: "Legal identifiers for your business. Displayed in quotes and on the website footer.",
-    keys: ["business_name", "business_abn", "business_licence"],
+    keys: ["business_name", "business_tagline", "business_abn", "business_licence"],
   },
   {
     title: "Contact Details",
@@ -54,6 +56,13 @@ const ALL_FIELDS: FieldDef[] = [
     label: "Business Name",
     placeholder: "Norris Decking and Sheds",
     hint: "Your registered trading name.",
+  },
+  {
+    key: "business_tagline",
+    label: "Footer Tagline",
+    placeholder: "Quality custom decks and sheds built to last. Proudly servicing Adelaide and surrounding areas with craftsmanship you can trust.",
+    hint: "Short description shown in the footer beneath the logo.",
+    textarea: true,
   },
   {
     key: "business_abn",
@@ -120,12 +129,32 @@ const ALL_FIELDS: FieldDef[] = [
 
 const fieldMap = Object.fromEntries(ALL_FIELDS.map((f) => [f.key, f])) as Record<keyof Settings, FieldDef>;
 
+// All keys that belong to this page — only these are sent on save
+const BUSINESS_KEYS: (keyof Settings)[] = [
+  "business_logo",
+  "business_name",
+  "business_tagline",
+  "business_abn",
+  "business_licence",
+  "business_phone",
+  "business_email",
+  "business_address",
+  "business_suburb",
+  "business_state",
+  "business_postcode",
+  "business_service_area",
+  "facebook_url",
+  "instagram_url",
+];
+
 export default function AdminBusinessPage() {
   const [settings, setSettings] = useState<Settings>({});
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
   const [saved, setSaved] = useState(false);
   const [error, setError] = useState("");
+  const [logoUploading, setLogoUploading] = useState(false);
+  const [logoUploadError, setLogoUploadError] = useState("");
 
   useEffect(() => {
     fetch("/api/site-settings")
@@ -144,16 +173,48 @@ export default function AdminBusinessPage() {
     setSettings((prev) => ({ ...prev, [key]: value }));
   }
 
+  async function handleLogoUpload(e: React.ChangeEvent<HTMLInputElement>) {
+    const file = e.target.files?.[0];
+    if (!file) return;
+    const fd = new FormData();
+    fd.append("file", file);
+    setLogoUploading(true);
+    setLogoUploadError("");
+    const res = await fetch("/api/upload", { method: "POST", body: fd });
+    setLogoUploading(false);
+    if (res.ok) {
+      const data = await res.json();
+      const logoUrl: string = data.url;
+      // Update local state
+      setSettings((prev) => ({ ...prev, business_logo: logoUrl }));
+      // Immediately persist the logo URL to the database
+      await fetch("/api/site-settings", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ business_logo: logoUrl }),
+      });
+    } else {
+      setLogoUploadError("Logo upload failed. Please try again.");
+    }
+  }
+
   async function handleSave(e: React.FormEvent) {
     e.preventDefault();
     setSaving(true);
     setError("");
     setSaved(false);
 
+    // Only send keys that belong to this page
+    const payload: Partial<Record<string, string>> = {};
+    for (const key of BUSINESS_KEYS) {
+      const val = settings[key];
+      if (val !== undefined) payload[key] = val;
+    }
+
     const res = await fetch("/api/site-settings", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(settings),
+      body: JSON.stringify(payload),
     });
 
     setSaving(false);
@@ -181,11 +242,57 @@ export default function AdminBusinessPage() {
           Business Information
         </h1>
         <p className="text-[#8C8277] mt-1 text-sm">
-          Your business details — used across the website, in quotes, and in Google search results.
+          Your business details - used across the website, in quotes, and in Google search results.
         </p>
       </div>
 
       <form onSubmit={handleSave} className="space-y-8">
+        {/* Logo Upload */}
+        <section className="bg-white rounded-xl border border-[#E8DDD0] overflow-hidden">
+          <div className="px-6 py-4 border-b border-[#E8DDD0] bg-[#FAF5EE]">
+            <h2 className="font-semibold text-[#2C2C2C]">Business Logo</h2>
+            <p className="text-xs text-[#8C8277] mt-0.5">Displayed in the site header and footer. Use a PNG or SVG with a transparent background for best results.</p>
+          </div>
+          <div className="p-6 space-y-4">
+            <div className="flex items-center gap-6">
+              {/* Preview */}
+              <div className="w-24 h-24 rounded-lg border border-[#E8DDD0] bg-[#FAF5EE] flex items-center justify-center overflow-hidden shrink-0">
+                {settings.business_logo ? (
+                  // eslint-disable-next-line @next/next/no-img-element
+                  <img src={settings.business_logo} alt="Logo preview" className="w-full h-full object-contain p-1" />
+                ) : (
+                  <div className="w-12 h-12 bg-[#8B5E3C] rounded-sm flex items-center justify-center">
+                    <span className="text-white font-bold text-xl">N</span>
+                  </div>
+                )}
+              </div>
+              <div className="space-y-2">
+                <label className="cursor-pointer bg-[#FAF5EE] border border-[#E8DDD0] hover:border-[#8B5E3C] text-[#2C2C2C] text-sm font-medium px-4 py-2 rounded-lg transition-colors flex items-center gap-2 w-fit">
+                  <svg className="w-4 h-4 text-[#8B5E3C]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12" />
+                  </svg>
+                  {logoUploading ? "Uploading…" : "Upload logo"}
+                  <input type="file" accept="image/png,image/svg+xml,image/webp,image/jpeg" className="hidden" onChange={handleLogoUpload} disabled={logoUploading} />
+                </label>
+                <p className="text-xs text-[#8C8277]">PNG, SVG or WebP · transparent background recommended</p>
+                {settings.business_logo && (
+                  <button type="button" onClick={async () => {
+                    setSettings((p) => ({ ...p, business_logo: "" }));
+                    await fetch("/api/site-settings", {
+                      method: "POST",
+                      headers: { "Content-Type": "application/json" },
+                      body: JSON.stringify({ business_logo: "" }),
+                    });
+                  }} className="text-xs text-red-500 hover:text-red-700 underline">
+                    Remove logo (use initials fallback)
+                  </button>
+                )}
+              </div>
+            </div>
+            {logoUploadError && <p className="text-red-600 text-xs">{logoUploadError}</p>}
+          </div>
+        </section>
+
         {SECTIONS.map((section) => (
           <section key={section.title} className="bg-white rounded-xl border border-[#E8DDD0] overflow-hidden">
             <div className="px-6 py-4 border-b border-[#E8DDD0] bg-[#FAF5EE]">

@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import { useParams } from "next/navigation";
-import Navbar from "@/components/Navbar";
+import Navbar from "@/components/NavbarServer";
 import Footer from "@/components/Footer";
 
 export default function FeedbackPage() {
@@ -152,7 +152,7 @@ export default function FeedbackPage() {
                     value={comment}
                     onChange={(e) => setComment(e.target.value)}
                     className="w-full border border-[#E8DDD0] rounded-lg px-4 py-2.5 text-sm focus:outline-none focus:border-[#8B5E3C] focus:ring-1 focus:ring-[#8B5E3C] resize-none"
-                    placeholder="Tell us about your experience — the process, the result, anything you'd like to share..."
+                    placeholder="Tell us about your experience - the process, the result, anything you'd like to share..."
                   />
                 </div>
 

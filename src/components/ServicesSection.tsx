@@ -1,47 +1,71 @@
 import Link from "next/link";
+import { unstable_noStore } from "next/cache";
+import { prisma } from "@/lib/prisma";
 
-const services = [
-  {
-    slug: "decks",
-    title: "Decking",
-    icon: (
-      <svg className="w-10 h-10" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6" />
-      </svg>
-    ),
-    description:
-      "Custom timber and composite decks designed and built to suit your home and lifestyle. From simple entertaining areas to multi-level statements.",
-    features: ["Timber & composite options", "Full design service", "Council approved", "Ongoing maintenance"],
-  },
-  {
-    slug: "sheds",
-    title: "Sheds",
-    icon: (
-      <svg className="w-10 h-10" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4" />
-      </svg>
-    ),
-    description:
-      "Sturdy, weatherproof sheds built to your exact requirements. Whether it's for storage, a workshop, or a hobby space, we build it to last.",
-    features: ["Custom sizing", "Various materials", "Concrete slab options", "Secure & weatherproof"],
-  },
-];
+const ICONS = {
+  decks: (
+    <svg className="w-10 h-10" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6" />
+    </svg>
+  ),
+  sheds: (
+    <svg className="w-10 h-10" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4" />
+    </svg>
+  ),
+};
 
-export default function ServicesSection() {
+const DEFAULTS = {
+  services_label: "What We Do",
+  services_heading: "Built for Adelaide's Climate & Lifestyle",
+  services_description:
+    "Every project is designed around how you actually live - outdoor entertaining, extra storage, a workshop, or all of the above.",
+  services_decking_title: "Decking",
+  services_decking_description:
+    "Custom timber and composite decks designed and built to suit your home and lifestyle. From simple entertaining areas to multi-level statements.",
+  services_decking_features: "Timber & composite options,Full design service,Council approved,Ongoing maintenance",
+  services_sheds_title: "Sheds",
+  services_sheds_description:
+    "Sturdy, weatherproof sheds built to your exact requirements. Whether it's for storage, a workshop, or a hobby space, we build it to last.",
+  services_sheds_features: "Custom sizing,Various materials,Concrete slab options,Secure & weatherproof",
+};
+
+export default async function ServicesSection() {
+  unstable_noStore();
+  const rows = await prisma.siteSettings.findMany();
+  const s = Object.fromEntries(rows.map((r: { key: string; value: string }) => [r.key, r.value])) as Partial<typeof DEFAULTS>;
+  const t = { ...DEFAULTS, ...s };
+
+  const services = [
+    {
+      slug: "decks",
+      title: t.services_decking_title,
+      icon: ICONS.decks,
+      description: t.services_decking_description,
+      features: t.services_decking_features.split(",").map((f) => f.trim()).filter(Boolean),
+    },
+    {
+      slug: "sheds",
+      title: t.services_sheds_title,
+      icon: ICONS.sheds,
+      description: t.services_sheds_description,
+      features: t.services_sheds_features.split(",").map((f) => f.trim()).filter(Boolean),
+    },
+  ];
+
   return (
-    <section className="py-24 bg-[#FAF5EE]">
+    <section className="py-16 sm:py-24 bg-[#FAF5EE]">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         {/* Header */}
-        <div className="text-center mb-16">
+        <div className="text-center mb-10 sm:mb-16">
           <p className="text-[#8B5E3C] text-sm font-semibold tracking-[0.3em] uppercase mb-3">
-            What We Do
+            {t.services_label}
           </p>
           <h2 className="text-4xl sm:text-5xl font-bold text-[#2C2C2C] mb-4 font-[var(--font-heading)]">
-            Built for Adelaide's Climate & Lifestyle
+            {t.services_heading}
           </h2>
           <p className="text-[#8C8277] text-lg max-w-2xl mx-auto">
-            Every project is designed around how you actually live — outdoor entertaining,
-            extra storage, a workshop, or all of the above.
+            {t.services_description}
           </p>
         </div>
 
@@ -53,7 +77,7 @@ export default function ServicesSection() {
               className="bg-white rounded-xl shadow-sm border border-[#E8DDD0] hover:shadow-md transition-shadow overflow-hidden group"
             >
               <div className="h-2 bg-gradient-to-r from-[#8B5E3C] to-[#3D5A3E]" />
-              <div className="p-8">
+              <div className="p-5 sm:p-8">
                 <div className="text-[#8B5E3C] mb-5 group-hover:text-[#3D5A3E] transition-colors">
                   {service.icon}
                 </div>

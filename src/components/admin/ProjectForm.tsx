@@ -216,7 +216,7 @@ export default function ProjectForm({ initialData }: ProjectFormProps) {
               value={form.description}
               onChange={(e) => setForm({ ...form, description: e.target.value })}
               className="w-full border border-[#E8DDD0] rounded-lg px-4 py-2.5 text-sm focus:outline-none focus:border-[#8B5E3C] resize-none"
-              placeholder="Describe the project — what was built, materials used, any special features or challenges..."
+              placeholder="Describe the project - what was built, materials used, any special features or challenges..."
             />
           </div>
 
@@ -247,7 +247,7 @@ export default function ProjectForm({ initialData }: ProjectFormProps) {
       <div className="bg-white rounded-xl border border-[#E8DDD0] p-6">
         <h2 className="text-lg font-bold text-[#2C2C2C] font-[var(--font-heading)] mb-2">Project Photos</h2>
         <p className="text-sm text-[#8C8277] mb-5">
-          Upload photos. Tag each as <strong>Before</strong>, <strong>After</strong>, or <strong>Gallery</strong> — if you have a Before and After image, a drag-reveal slider will appear on the project page.
+          Upload photos. Tag each as <strong>Before</strong>, <strong>After</strong>, or <strong>Gallery</strong> - if you have a Before and After image, a drag-reveal slider will appear on the project page.
         </p>
 
         {/* Upload area */}
@@ -394,7 +394,7 @@ export default function ProjectForm({ initialData }: ProjectFormProps) {
         >
           <div>
             <h2 className="text-lg font-bold text-[#2C2C2C] font-[var(--font-heading)]">SEO &amp; Discoverability</h2>
-            <p className="text-xs text-[#8C8277] mt-0.5">Optional — override how this project appears in Google search results.</p>
+            <p className="text-xs text-[#8C8277] mt-0.5">Optional - override how this project appears in Google search results.</p>
           </div>
           <svg className="w-5 h-5 text-[#8C8277] shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />

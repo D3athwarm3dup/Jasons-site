@@ -61,7 +61,7 @@ export default async function AdminFeedbackPage() {
                       &ldquo;{f.comment}&rdquo;
                     </blockquote>
                     <p className="text-xs text-[#8C8277]">
-                      — {f.clientName} &middot; {formatDate(f.createdAt)}
+                      {f.clientName} &middot; {formatDate(f.createdAt)}
                     </p>
                   </div>
                   <FeedbackActions feedbackId={f.id} approved={false} />
@@ -97,7 +97,7 @@ export default async function AdminFeedbackPage() {
                     <blockquote className="text-[#2C2C2C] text-sm leading-relaxed mb-1">
                       &ldquo;{f.comment}&rdquo;
                     </blockquote>
-                    <p className="text-xs text-[#8C8277]">— {f.clientName} &middot; {formatDate(f.createdAt)}</p>
+                    <p className="text-xs text-[#8C8277]">{f.clientName} &middot; {formatDate(f.createdAt)}</p>
                   </div>
                   <FeedbackActions feedbackId={f.id} approved={true} />
                 </div>

@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { Playfair_Display, Lato } from "next/font/google";
+import { prisma } from "@/lib/prisma";
 import "./globals.css";
 
 const playfair = Playfair_Display({
@@ -14,17 +15,16 @@ const lato = Lato({
   weight: ["300", "400", "700", "900"],
 });
 
-export const metadata: Metadata = {
-  title: "Norris Decking & Sheds | Adelaide & Surrounds",
-  description:
-    "Premium custom decks and sheds built by Jason Norris. Servicing Adelaide and surrounds. Quality craftsmanship, honest service, lasting results.",
-  keywords: [
-    "decking Adelaide",
-    "custom sheds Adelaide",
-    "deck builder Adelaide",
-    "Norris Decking",
-  ],
-};
+export async function generateMetadata(): Promise<Metadata> {
+  const rows = await prisma.siteSettings.findMany();
+  const s = Object.fromEntries(rows.map((r: { key: string; value: string }) => [r.key, r.value]));
+  const title = s.site_meta_title || "Norris Decking & Sheds | Adelaide & Surrounds";
+  const description = s.site_meta_description || "Premium custom decks and sheds built by Jason Norris. Servicing Adelaide and surrounds. Quality craftsmanship, honest service, lasting results.";
+  const keywords = s.site_meta_keywords
+    ? s.site_meta_keywords.split(",").map((k: string) => k.trim()).filter(Boolean)
+    : ["decking Adelaide", "custom sheds Adelaide", "deck builder Adelaide", "Norris Decking"];
+  return { title, description, keywords };
+}
 
 export default function RootLayout({
   children,

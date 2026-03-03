@@ -22,6 +22,33 @@ export async function POST(req: NextRequest) {
       },
     });
 
+    // Auto-upsert into marketing contacts (deduped by email if provided)
+    if (email) {
+      await prisma.contact.upsert({
+        where: { email },
+        update: {
+          // Update phone if we now have one and didn't before
+          ...(phone ? { phone } : {}),
+          updatedAt: new Date(),
+        },
+        create: {
+          name,
+          email,
+          phone: phone || null,
+          source: "enquiry",
+          optedIn: true,
+        },
+      });
+    } else if (phone) {
+      // No email — only add if phone not already in the list
+      const existing = await prisma.contact.findFirst({ where: { phone } });
+      if (!existing) {
+        await prisma.contact.create({
+          data: { name, phone, source: "enquiry", optedIn: true },
+        });
+      }
+    }
+
     return NextResponse.json(submission, { status: 201 });
   } catch (error) {
     console.error(error);

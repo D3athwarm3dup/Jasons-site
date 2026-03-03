@@ -1,8 +1,17 @@
-import Navbar from "@/components/Navbar";
+import { unstable_noStore } from "next/cache";
+import Navbar from "@/components/NavbarServer";
 import Footer from "@/components/Footer";
 import CTASection from "@/components/CTASection";
 import ProjectCard from "@/components/ProjectCard";
+import PageHero from "@/components/PageHero";
 import { prisma } from "@/lib/prisma";
+
+const PP_DEFAULTS = {
+  pp_hero_bg_image: "",
+  pp_hero_label: "Our Work",
+  pp_hero_heading: "Completed Projects",
+  pp_hero_subtext: "Every project is a source of pride. Browse our completed work across Adelaide and surrounds.",
+};
 
 export const metadata = {
   title: "Projects | Norris Decking & Sheds",
@@ -61,29 +70,27 @@ export default async function ProjectsPage({
 }: {
   searchParams: Promise<{ category?: string }>;
 }) {
+  unstable_noStore();
   const params = await searchParams;
   const category = params.category ?? "";
-  const projects = await getProjects(category || undefined);
+  const [projects, rows] = await Promise.all([
+    getProjects(category || undefined),
+    prisma.siteSettings.findMany(),
+  ]);
+  const raw = Object.fromEntries(rows.map((r: { key: string; value: string }) => [r.key, r.value]));
+  const s = Object.fromEntries(Object.entries(raw).filter(([, v]) => v !== "")) as Partial<typeof PP_DEFAULTS>;
+  const t = { ...PP_DEFAULTS, ...s };
 
   return (
     <>
       <Navbar />
       <main>
-        {/* Hero */}
-        <section className="bg-[#2C2C2C] py-20">
-          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <p className="text-[#C4936A] text-sm font-semibold tracking-[0.3em] uppercase mb-3">
-              Our Work
-            </p>
-            <h1 className="text-5xl font-bold text-white font-[var(--font-heading)]">
-              Completed Projects
-            </h1>
-            <p className="text-[#8C8277] text-lg mt-4 max-w-xl">
-              Every project is a source of pride. Browse our completed work across
-              Adelaide and surrounds.
-            </p>
-          </div>
-        </section>
+        <PageHero
+          bgImage={t.pp_hero_bg_image}
+          label={t.pp_hero_label}
+          heading={t.pp_hero_heading}
+          subtext={t.pp_hero_subtext}
+        />
 
         {/* Filter tabs */}
         <section className="bg-white border-b border-[#E8DDD0] sticky top-20 z-30">
@@ -125,7 +132,7 @@ export default async function ProjectsPage({
                   />
                 </svg>
                 <p className="text-[#8C8277] text-lg">
-                  Projects coming soon — check back shortly!
+                  Projects coming soon - check back shortly!
                 </p>
               </div>
             ) : (

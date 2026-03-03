@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { auth } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
+import { revalidatePath } from "next/cache";
 
 // GET /api/site-settings - return all settings as { key: value } object
 export async function GET() {
@@ -29,6 +30,11 @@ export async function POST(req: NextRequest) {
         })
       )
     );
+
+    // Force all public pages to re-render on next request
+    for (const path of ["/", "/services", "/projects", "/about", "/contact"]) {
+      revalidatePath(path);
+    }
 
     return NextResponse.json({ success: true });
   } catch (error) {

@@ -95,6 +95,19 @@ model ContactSubmission {
   createdAt DateTime @default(now())
 }
 
+// Marketing contacts — auto-populated from enquiries, deduped by email
+model Contact {
+  id        String   @id @default(cuid())
+  name      String
+  email     String?  @unique
+  phone     String?
+  source    String   @default("enquiry") // enquiry | manual
+  notes     String   @default("")
+  optedIn   Boolean  @default(true)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
 // Site-wide settings stored as key/value pairs
 model SiteSettings {
   key       String   @id
