@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
+import { sendEnquiryNotification } from "@/lib/notify";
 
 // POST /api/contact - Save a contact form submission
 export async function POST(req: NextRequest) {
@@ -21,6 +22,11 @@ export async function POST(req: NextRequest) {
         read: false,
       },
     });
+
+    // Send email notification to Jason — fire-and-forget, won't break the form if it fails
+    sendEnquiryNotification({ name, email, phone, service, message }).catch((err) =>
+      console.error("Enquiry notification failed:", err)
+    );
 
     // Auto-upsert into marketing contacts (deduped by email if provided)
     if (email) {
