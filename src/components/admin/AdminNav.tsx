@@ -3,7 +3,6 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useState } from "react";
-import { signOut } from "next-auth/react";
 
 type NavItem = {
   type: "item";
@@ -209,7 +208,10 @@ export default function AdminNav() {
           View Website
         </Link>
         <button
-          onClick={() => signOut({ callbackUrl: "/admin/login" })}
+          onClick={async () => {
+            await fetch("/api/auth/signout", { method: "POST" });
+            window.location.href = "/admin/login";
+          }}
           className="w-full flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm text-[#8C8277] hover:text-white hover:bg-[#3a3a3a] transition-colors"
         >
           <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
