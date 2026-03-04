@@ -39,6 +39,24 @@ html {
   scroll-behavior: smooth;
 }
 
+/* ── Browser compatibility fixes ─────────────────────────────────────────── */
+
+/* Safari: use --vh custom property set by BrowserCompat.tsx instead of 100vh
+   so full-height sections aren't clipped by the mobile address bar.          */
+[data-browser="safari"] .min-h-screen {
+  min-height: calc(var(--vh, 1vh) * 100);
+}
+
+/* Safari legacy (< v15): flex gap fallback using margins on children */
+html.safari-legacy .gap-6 > * + * { margin-top: 1.5rem; }
+html.safari-legacy .gap-8 > * + * { margin-top: 2rem; }
+
+/* Firefox: scroll-snap adjustment */
+html.browser-firefox {
+  scrollbar-width: thin;
+  scrollbar-color: #8B5E3C #f1ece6;
+}
+
 /* Custom scrollbar */
 ::-webkit-scrollbar {
   width: 8px;

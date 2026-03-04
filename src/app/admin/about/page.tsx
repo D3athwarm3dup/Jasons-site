@@ -199,7 +199,7 @@ export default function AdminAboutPage() {
   return (
     <div className="max-w-3xl mx-auto space-y-8">
       <div>
-        <h1 className="text-2xl font-bold text-[#2C2C2C]" style={{ fontFamily: "var(--font-playfair)" }}>
+        <h1 className="text-2xl font-bold text-[#2C2C2C] font-[var(--font-playfair)]">
           About Page
         </h1>
         <p className="text-[#8C8277] mt-1 text-sm">
@@ -241,8 +241,7 @@ export default function AdminAboutPage() {
               ) : (
                 <div
                   onClick={() => mainImageRef.current?.click()}
-                  className="w-48 border-2 border-dashed border-[#E8DDD0] rounded-xl flex flex-col items-center justify-center cursor-pointer hover:border-[#8B5E3C] transition-colors mb-3 py-10"
-                  style={{ aspectRatio: "4/5" }}
+                  className="w-48 aspect-[4/5] border-2 border-dashed border-[#E8DDD0] rounded-xl flex flex-col items-center justify-center cursor-pointer hover:border-[#8B5E3C] transition-colors mb-3 py-10"
                 >
                   {uploadingKey === "main" ? (
                     <div className="w-6 h-6 border-2 border-[#8B5E3C] border-t-transparent rounded-full animate-spin" />
@@ -345,8 +344,7 @@ export default function AdminAboutPage() {
                   ) : (
                     <div
                       onClick={() => triggerMemberUpload(member.id)}
-                      className="w-40 border-2 border-dashed border-[#E8DDD0] rounded-xl flex flex-col items-center justify-center cursor-pointer hover:border-[#8B5E3C] transition-colors mb-3 py-8"
-                      style={{ aspectRatio: "4/5" }}
+                      className="w-40 aspect-[4/5] border-2 border-dashed border-[#E8DDD0] rounded-xl flex flex-col items-center justify-center cursor-pointer hover:border-[#8B5E3C] transition-colors mb-3 py-8"
                     >
                       {uploadingKey === member.id ? (
                         <div className="w-6 h-6 border-2 border-[#8B5E3C] border-t-transparent rounded-full animate-spin" />

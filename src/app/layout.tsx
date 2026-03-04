@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { Playfair_Display, Lato } from "next/font/google";
 import { prisma } from "@/lib/prisma";
+import BrowserCompat from "@/components/BrowserCompat";
 import "./globals.css";
 
 const playfair = Playfair_Display({
@@ -34,6 +35,7 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body className={`${playfair.variable} ${lato.variable} antialiased`}>
+        <BrowserCompat />
         {children}
       </body>
     </html>

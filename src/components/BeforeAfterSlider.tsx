@@ -63,8 +63,7 @@ export default function BeforeAfterSlider({
   return (
     <div
       ref={containerRef}
-      className={`relative overflow-hidden select-none ${className}`}
-      style={{ cursor: isDragging ? "col-resize" : "ew-resize" }}
+      className={`relative overflow-hidden select-none ${isDragging ? "cursor-col-resize" : "cursor-ew-resize"} ${className}`}
       // Allow clicking anywhere on the container to jump the divider
       onClick={(e) => getPosition(e.clientX)}
     >
@@ -112,8 +111,7 @@ export default function BeforeAfterSlider({
 
         {/* Circular handle */}
         <div
-          className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-12 h-12 rounded-full bg-white shadow-2xl flex items-center justify-center"
-          style={{ cursor: "col-resize" }}
+          className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-12 h-12 rounded-full bg-white shadow-2xl flex items-center justify-center cursor-col-resize"
         >
           {/* Left arrow */}
           <svg className="w-3 h-3 text-[#8B5E3C] mr-0.5" fill="currentColor" viewBox="0 0 20 20">
@@ -135,19 +133,14 @@ export default function BeforeAfterSlider({
       </div>
 
       {/* BEFORE label */}
-      <div className="absolute bottom-6 left-0 z-10 pointer-events-none"
-        style={{ opacity: position > 15 ? 1 : 0, transition: "opacity 0.2s" }}
-      >
+      <div className={`absolute bottom-6 left-0 z-10 pointer-events-none transition-opacity duration-200 ${position > 15 ? "opacity-100" : "opacity-0"}`}>
         <span className="ml-4 bg-black/60 text-white text-xs font-bold uppercase tracking-widest px-3 py-1.5 rounded backdrop-blur-sm">
           Before
         </span>
       </div>
 
       {/* AFTER label */}
-      <div
-        className="absolute bottom-6 right-0 z-10 pointer-events-none"
-        style={{ opacity: position < 85 ? 1 : 0, transition: "opacity 0.2s" }}
-      >
+      <div className={`absolute bottom-6 right-0 z-10 pointer-events-none transition-opacity duration-200 ${position < 85 ? "opacity-100" : "opacity-0"}`}>
         <span className="mr-4 bg-[#8B5E3C]/80 text-white text-xs font-bold uppercase tracking-widest px-3 py-1.5 rounded backdrop-blur-sm">
           After
         </span>

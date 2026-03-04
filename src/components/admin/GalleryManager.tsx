@@ -82,6 +82,7 @@ export default function GalleryManager({ images: initialImages }: { images: Gall
           type="file"
           accept="image/*"
           multiple
+          aria-label="Upload gallery images"
           className="hidden"
           onChange={(e) => e.target.files && handleUpload(e.target.files)}
         />

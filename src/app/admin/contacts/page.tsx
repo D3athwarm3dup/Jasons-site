@@ -26,10 +26,6 @@ export default function AdminContactsPage() {
   const [saving, setSaving] = useState(false);
   const [search, setSearch] = useState("");
 
-  useEffect(() => {
-    load();
-  }, []);
-
   async function load() {
     setLoading(true);
     try {
@@ -41,6 +37,10 @@ export default function AdminContactsPage() {
     }
     setLoading(false);
   }
+
+  useEffect(() => {
+    (async () => { await load(); })();
+  }, []);
 
   async function handleAdd(e: React.FormEvent) {
     e.preventDefault();
@@ -92,7 +92,7 @@ export default function AdminContactsPage() {
       {/* Header */}
       <div className="flex items-start justify-between mb-6">
         <div>
-          <h1 className="text-2xl font-bold text-[#2C2C2C]" style={{ fontFamily: "var(--font-playfair)" }}>
+          <h1 className="text-2xl font-bold text-[#2C2C2C] font-[var(--font-heading)]">
             Contacts
           </h1>
           <p className="text-[#8C8277] mt-1 text-sm">
@@ -100,6 +100,7 @@ export default function AdminContactsPage() {
           </p>
         </div>
         <div className="flex gap-2">
+          {/* eslint-disable-next-line @next/next/no-html-link-for-pages */}
           <a
             href="/api/contacts/export"
             className="flex items-center gap-2 text-sm border border-[#E8DDD0] text-[#2C2C2C] hover:border-[#8B5E3C] hover:text-[#8B5E3C] px-4 py-2 rounded-lg transition-colors bg-white"

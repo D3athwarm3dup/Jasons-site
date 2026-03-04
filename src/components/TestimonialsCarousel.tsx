@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useEffect, useCallback } from "react";
+import Link from "next/link";
 
 export interface Testimonial {
   clientName: string;
@@ -116,8 +117,7 @@ export default function TestimonialsCarousel({
 
         {/* Cards */}
         <div
-          className="grid md:grid-cols-3 gap-6 transition-opacity duration-300"
-          style={{ opacity: fading ? 0 : 1 }}
+          className={`grid md:grid-cols-3 gap-6 transition-opacity duration-300 ${fading ? "opacity-0" : "opacity-100"}`}
         >
           {displayed.map((t, i) => (
             <div
@@ -175,7 +175,7 @@ export default function TestimonialsCarousel({
         )}
 
         <div className="text-center mt-10">
-          <a
+          <Link
             href="/projects"
             className="inline-flex items-center gap-2 text-[#8B5E3C] hover:text-[#6B4226] font-semibold text-sm transition-colors"
           >
@@ -183,7 +183,7 @@ export default function TestimonialsCarousel({
             <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
             </svg>
-          </a>
+          </Link>
         </div>
       </div>
     </section>

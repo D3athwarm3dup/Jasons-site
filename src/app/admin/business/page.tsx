@@ -238,7 +238,7 @@ export default function AdminBusinessPage() {
     <div className="max-w-3xl mx-auto space-y-8">
       {/* Header */}
       <div>
-        <h1 className="text-2xl font-bold text-[#2C2C2C]" style={{ fontFamily: "var(--font-playfair)" }}>
+        <h1 className="text-2xl font-bold text-[#2C2C2C] font-[var(--font-playfair)]">
           Business Information
         </h1>
         <p className="text-[#8C8277] mt-1 text-sm">

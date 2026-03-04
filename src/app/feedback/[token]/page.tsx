@@ -106,6 +106,7 @@ export default function FeedbackPage() {
                         onMouseEnter={() => setHoverRating(star)}
                         onMouseLeave={() => setHoverRating(0)}
                         className="transition-transform hover:scale-110"
+                        title={`Rate ${star} star${star > 1 ? "s" : ""}`}
                       >
                         <svg
                           className={`w-10 h-10 transition-colors ${

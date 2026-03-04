@@ -52,13 +52,12 @@ export default async function Footer() {
           {/* Brand */}
           <div>
             {s.business_logo ? (
-              <div className="relative overflow-hidden mb-3" style={{ height: "56px" }}>
+              <div className="relative overflow-hidden mb-3 h-14">
                 {/* eslint-disable-next-line @next/next/no-img-element */}
                 <img
                   src={s.business_logo}
                   alt={businessName}
-                  className="absolute w-auto"
-                  style={{ maxWidth: "220px", top: "50%", left: 0, transform: "translateY(-50%)" }}
+                  className="absolute w-auto max-w-[220px] top-1/2 left-0 -translate-y-1/2"
                 />
               </div>
             ) : (

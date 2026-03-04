@@ -133,7 +133,7 @@ export default function AdminServicesPage() {
   return (
     <div className="max-w-3xl mx-auto space-y-8">
       <div>
-        <h1 className="text-2xl font-bold text-[#2C2C2C]" style={{ fontFamily: "var(--font-playfair)" }}>
+        <h1 className="text-2xl font-bold text-[#2C2C2C] font-[var(--font-heading)]">
           Services Page
         </h1>
         <p className="text-[#8C8277] mt-1 text-sm">
@@ -255,7 +255,7 @@ function ServiceCard({
               )}
             </div>
             <div className="space-y-2">
-              <input ref={imageRef} type="file" accept="image/*" className="hidden" onChange={onUpload} />
+              <input ref={imageRef} type="file" accept="image/*" aria-label="Upload service image" className="hidden" onChange={onUpload} />
               <button type="button" onClick={() => imageRef.current?.click()}
                 className="px-4 py-2 bg-[#8B5E3C] text-white rounded text-sm font-medium hover:bg-[#7A4F30] transition-colors disabled:opacity-50"
                 disabled={uploading}>

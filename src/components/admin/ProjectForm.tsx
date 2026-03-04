@@ -182,8 +182,9 @@ export default function ProjectForm({ initialData }: ProjectFormProps) {
 
           <div className="grid sm:grid-cols-2 gap-5">
             <div>
-              <label className="block text-sm font-medium text-[#2C2C2C] mb-1.5">Category</label>
+              <label htmlFor="project-category" className="block text-sm font-medium text-[#2C2C2C] mb-1.5">Category</label>
               <select
+                id="project-category"
                 value={form.category}
                 onChange={(e) => setForm({ ...form, category: e.target.value })}
                 className="w-full border border-[#E8DDD0] rounded-lg px-4 py-2.5 text-sm focus:outline-none focus:border-[#8B5E3C] bg-white"
@@ -196,8 +197,9 @@ export default function ProjectForm({ initialData }: ProjectFormProps) {
               </select>
             </div>
             <div>
-              <label className="block text-sm font-medium text-[#2C2C2C] mb-1.5">Date Completed</label>
+              <label htmlFor="project-date" className="block text-sm font-medium text-[#2C2C2C] mb-1.5">Date Completed</label>
               <input
+                id="project-date"
                 type="date"
                 value={form.completedAt}
                 onChange={(e) => setForm({ ...form, completedAt: e.target.value })}
@@ -270,6 +272,7 @@ export default function ProjectForm({ initialData }: ProjectFormProps) {
             type="file"
             accept="image/*"
             multiple
+            aria-label="Upload project images"
             className="hidden"
             onChange={(e) => e.target.files && handleImageUpload(e.target.files)}
           />
@@ -313,6 +316,7 @@ export default function ProjectForm({ initialData }: ProjectFormProps) {
                 <select
                   value={img.role}
                   onChange={(e) => setRole(index, e.target.value)}
+                  aria-label="Image role"
                   className="w-full text-xs border border-[#E8DDD0] rounded px-2 py-1 bg-white focus:outline-none focus:border-[#8B5E3C] text-[#2C2C2C]"
                 >
                   <option value="gallery">Gallery</option>
@@ -358,6 +362,7 @@ export default function ProjectForm({ initialData }: ProjectFormProps) {
                   type="text"
                   readOnly
                   value={feedbackLink}
+                  aria-label="Feedback link URL"
                   className="flex-1 bg-white border border-[#E8DDD0] rounded px-3 py-2 text-sm text-[#8C8277]"
                 />
                 <button

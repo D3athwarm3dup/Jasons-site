@@ -50,15 +50,7 @@ export default async function HeroSection() {
       {/* Subtle timber-grain line texture on top */}
       <div
         className="absolute inset-0 opacity-10"
-        style={{
-          backgroundImage: `repeating-linear-gradient(
-            0deg,
-            transparent,
-            transparent 3px,
-            rgba(255,255,255,0.05) 3px,
-            rgba(255,255,255,0.05) 4px
-          )`,
-        }}
+        style={{ backgroundImage: "repeating-linear-gradient(0deg,transparent,transparent 3px,rgba(255,255,255,0.05) 3px,rgba(255,255,255,0.05) 4px)" }}
         aria-hidden="true"
       />
 
