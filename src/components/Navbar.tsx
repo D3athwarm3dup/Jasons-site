@@ -26,7 +26,7 @@ export default function Navbar({ logo, businessName }: NavbarProps) {
       router.push("/admin/login");
       return;
     }
-    tapTimer.current = setTimeout(() => { tapCount.current = 0; }, 2000);
+    tapTimer.current = setTimeout(() => { tapCount.current = 0; }, 3000);
   }
 
   return (
