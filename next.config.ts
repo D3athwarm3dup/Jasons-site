@@ -1,7 +1,12 @@
 import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
-  /* config options here */
+  serverExternalPackages: ["@prisma/client", ".prisma/client", "@libsql/client", "@prisma/adapter-libsql"],
+  experimental: {
+    // Limit workers for shared hosting with process limits
+    workerThreads: false,
+    cpus: 1,
+  },
 };
 
 export default nextConfig;

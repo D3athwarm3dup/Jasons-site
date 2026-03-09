@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { Playfair_Display, Lato } from "next/font/google";
 import { prisma } from "@/lib/prisma";
 import BrowserCompat from "@/components/BrowserCompat";
+import Script from "next/script";
 import "./globals.css";
 
 const playfair = Playfair_Display({
@@ -35,6 +36,18 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body className={`${playfair.variable} ${lato.variable} antialiased`}>
+        <Script
+          src="https://www.googletagmanager.com/gtag/js?id=G-GCPW3P19P8"
+          strategy="afterInteractive"
+        />
+        <Script id="gtag-init" strategy="afterInteractive">
+          {`
+            window.dataLayer = window.dataLayer || [];
+            function gtag(){dataLayer.push(arguments);}
+            gtag('js', new Date());
+            gtag('config', 'G-GCPW3P19P8');
+          `}
+        </Script>
         <BrowserCompat />
         {children}
       </body>
