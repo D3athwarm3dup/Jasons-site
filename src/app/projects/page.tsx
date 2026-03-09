@@ -1,4 +1,5 @@
 import { unstable_noStore } from "next/cache";
+import Link from "next/link";
 import Navbar from "@/components/NavbarServer";
 import Footer from "@/components/Footer";
 import CTASection from "@/components/CTASection";
@@ -63,7 +64,7 @@ const categories = [
   { value: "", label: "All Projects" },
   { value: "deck", label: "Decks" },
   { value: "shed", label: "Sheds" },
-  { value: "other", label: "Other" },
+  { value: "other", label: "Others" },
 ];
 
 export default async function ProjectsPage({
@@ -98,9 +99,9 @@ export default async function ProjectsPage({
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div className="flex gap-1 py-3">
               {categories.map((cat) => (
-                <a
+                <Link
                   key={cat.value}
-                  href={cat.value ? `?category=${cat.value}` : "/projects"}
+                  href={cat.value ? `/projects?category=${cat.value}` : "/projects"}
                   className={`px-4 py-2 rounded text-sm font-medium transition-colors ${
                     category === cat.value
                       ? "bg-[#8B5E3C] text-white"
@@ -108,7 +109,7 @@ export default async function ProjectsPage({
                   }`}
                 >
                   {cat.label}
-                </a>
+                </Link>
               ))}
             </div>
           </div>
