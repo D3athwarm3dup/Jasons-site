@@ -1,0 +1,16 @@
+services:
+  web:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: norris-decking
+    restart: unless-stopped
+    ports:
+      - "3000:3000"
+    env_file:
+      - .env.production
+    volumes:
+      # SQLite database – persists across container rebuilds
+      - ./data:/app/data
+      # User-uploaded images – persists across container rebuilds
+      - ./uploads:/app/public/uploads
