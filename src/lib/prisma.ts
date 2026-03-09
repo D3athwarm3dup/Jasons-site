@@ -1,11 +1,9 @@
 import { PrismaClient } from "@prisma/client";
-import { PrismaLibSQL } from "@prisma/adapter-libsql";
-import { createClient } from "@libsql/client";
+import { PrismaLibSql } from "@prisma/adapter-libsql";
 import path from "path";
 
-const dbUrl = "file:" + path.join(process.cwd(), "dev.db");
-const libsql = createClient({ url: dbUrl });
-const adapter = new PrismaLibSQL(libsql);
+const dbPath = path.join(process.cwd(), "dev.db");
+const adapterFactory = new PrismaLibSql({ url: "file:" + dbPath });
 
 const globalForPrisma = globalThis as unknown as {
   prisma: PrismaClient | undefined;
@@ -14,7 +12,7 @@ const globalForPrisma = globalThis as unknown as {
 export const prisma =
   globalForPrisma.prisma ??
   new PrismaClient({
-    adapter,
+    adapter: adapterFactory,
     log: process.env.NODE_ENV === "development" ? ["error", "warn"] : ["error"],
   });
 
