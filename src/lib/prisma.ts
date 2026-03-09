@@ -1,11 +1,14 @@
 import { PrismaClient } from "@prisma/client";
-import { PrismaLibSql } from "@prisma/adapter-libsql";
+import { PrismaBetterSqlite3 } from "@prisma/adapter-better-sqlite3";
 import path from "path";
 
-// In production (Docker) DATABASE_URL=file:/app/data/prod.db
+// In production (Docker) DATABASE_URL=file:/app/data/prod.db — strip "file:" prefix.
 // In development it falls back to dev.db in the project root.
-const dbUrl = process.env.DATABASE_URL ?? ("file:" + path.join(process.cwd(), "dev.db"));
-const adapterFactory = new PrismaLibSql({ url: dbUrl });
+const dbUrl = process.env.DATABASE_URL
+  ? process.env.DATABASE_URL.replace(/^file:/, "")
+  : path.join(process.cwd(), "dev.db");
+
+const adapter = new PrismaBetterSqlite3({ url: dbUrl });
 
 const globalForPrisma = globalThis as unknown as {
   prisma: PrismaClient | undefined;
@@ -14,7 +17,7 @@ const globalForPrisma = globalThis as unknown as {
 export const prisma =
   globalForPrisma.prisma ??
   new PrismaClient({
-    adapter: adapterFactory,
+    adapter,
     log: process.env.NODE_ENV === "development" ? ["error", "warn"] : ["error"],
   });
 
