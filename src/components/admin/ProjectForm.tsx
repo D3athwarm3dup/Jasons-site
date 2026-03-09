@@ -191,6 +191,7 @@ export default function ProjectForm({ initialData }: ProjectFormProps) {
               >
                 <option value="deck">Deck</option>
                 <option value="shed">Shed</option>
+                <option value="other">Other</option>
                 <option value="pergola">Pergola</option>
                 <option value="carport">Carport</option>
                 <option value="other">Other</option>

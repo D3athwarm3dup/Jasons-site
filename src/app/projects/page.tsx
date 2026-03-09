@@ -63,6 +63,7 @@ const categories = [
   { value: "", label: "All Projects" },
   { value: "deck", label: "Decks" },
   { value: "shed", label: "Sheds" },
+  { value: "other", label: "Others" },
 ];
 
 export default async function ProjectsPage({
