@@ -3,7 +3,7 @@ import type { NextAuthConfig } from "next-auth";
 // Edge-compatible auth config — no Prisma, no Node.js-only imports.
 // Used by middleware to validate JWT sessions without hitting the database.
 export const authConfig = {
-  secret: process.env.NEXTAUTH_SECRET,
+  secret: process.env.AUTH_SECRET || process.env.NEXTAUTH_SECRET,
   trustHost: true,
   pages: {
     signIn: "/admin/login",
