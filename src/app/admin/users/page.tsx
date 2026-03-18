@@ -6,6 +6,7 @@ type User = {
   id: string;
   name: string;
   email: string;
+  role: string;
   createdAt: string;
 };
 
@@ -13,6 +14,7 @@ type EditState = {
   id: string;
   name: string;
   email: string;
+  role: string;
   password: string;
 };
 
@@ -22,6 +24,7 @@ function blankForm() {
 
 export default function AdminUsersPage() {
   const [currentEmail, setCurrentEmail] = useState("");
+  const [currentRole, setCurrentRole] = useState("");
 
   const [users, setUsers] = useState<User[]>([]);
   const [loading, setLoading] = useState(true);
@@ -42,10 +45,15 @@ export default function AdminUsersPage() {
   const [showAddPw, setShowAddPw] = useState(false);
   const [showEditPw, setShowEditPw] = useState(false);
 
+  const isSuperAdmin = currentRole === "superadmin";
+
   useEffect(() => {
     fetch("/api/auth/session")
       .then((r) => r.json())
-      .then((s) => setCurrentEmail(s?.user?.email ?? ""))
+      .then((s) => {
+        setCurrentEmail(s?.user?.email ?? "");
+        setCurrentRole(s?.user?.role ?? "admin");
+      })
       .catch(() => {});
     load();
   }, []);
@@ -94,7 +102,7 @@ export default function AdminUsersPage() {
     setEditSaving(true);
     setEditError("");
     try {
-      const body: Record<string, string> = { name: editState.name, email: editState.email };
+      const body: Record<string, string> = { name: editState.name, email: editState.email, role: editState.role };
       if (editState.password) body.password = editState.password;
       const res = await fetch(`/api/users/${editState.id}`, {
         method: "PATCH",
@@ -121,6 +129,10 @@ export default function AdminUsersPage() {
       alert("You cannot delete your own account.");
       return;
     }
+    if (user.role === "superadmin") {
+      alert("Superadmin accounts cannot be deleted.");
+      return;
+    }
     if (!confirm(`Delete user "${user.name}" (${user.email})? This cannot be undone.`)) return;
     try {
       await fetch(`/api/users/${user.id}`, { method: "DELETE" });
@@ -131,12 +143,27 @@ export default function AdminUsersPage() {
   }
 
   function openEdit(user: User) {
-    setEditState({ id: user.id, name: user.name, email: user.email, password: "" });
+    setEditState({ id: user.id, name: user.name, email: user.email, role: user.role, password: "" });
     setEditError("");
     setShowEditPw(false);
   }
 
   const inputCls = "w-full border border-[#E8DDD0] rounded-lg px-4 py-2.5 text-sm focus:outline-none focus:border-[#8B5E3C] focus:ring-1 focus:ring-[#8B5E3C]";
+
+  function RoleBadge({ role }: { role: string }) {
+    if (role === "superadmin") {
+      return (
+        <span className="text-xs bg-amber-100 text-amber-700 font-semibold px-2 py-0.5 rounded">
+          Super Admin
+        </span>
+      );
+    }
+    return (
+      <span className="text-xs bg-[#E8DDD0] text-[#8C8277] font-medium px-2 py-0.5 rounded">
+        Admin
+      </span>
+    );
+  }
 
   return (
     <div className="p-6 lg:p-8 max-w-4xl mx-auto">
@@ -146,7 +173,7 @@ export default function AdminUsersPage() {
           <h1 className="text-2xl font-bold text-[#2C2C2C]">User Management</h1>
           <p className="text-sm text-[#8C8277] mt-1">Admin accounts with access to this panel</p>
         </div>
-        {!adding && (
+        {!adding && isSuperAdmin && (
           <button
             onClick={() => { setAdding(true); setAddForm(blankForm()); setAddError(""); }}
             className="flex items-center gap-2 bg-[#8B5E3C] hover:bg-[#6B4226] text-white text-sm font-semibold px-4 py-2.5 rounded-lg transition-colors"
@@ -160,7 +187,7 @@ export default function AdminUsersPage() {
       </div>
 
       {/* Add user form */}
-      {adding && (
+      {adding && isSuperAdmin && (
         <div className="bg-white border border-[#E8DDD0] rounded-xl p-6 mb-6 shadow-sm">
           <h2 className="text-base font-semibold text-[#2C2C2C] mb-5">New Admin User</h2>
           <form onSubmit={handleAdd} className="space-y-4">
@@ -256,14 +283,16 @@ export default function AdminUsersPage() {
             <tbody className="divide-y divide-[#E8DDD0]">
               {users.map((user) => {
                 const isYou = user.email === currentEmail;
+                const canDelete = isSuperAdmin && !isYou && user.role !== "superadmin";
                 return (
                   <tr key={user.id} className="hover:bg-[#FAF5EE]/50 transition-colors">
                     <td className="px-5 py-4 font-medium text-[#2C2C2C]">
-                      <div className="flex items-center gap-2">
+                      <div className="flex items-center gap-2 flex-wrap">
                         <div className="w-8 h-8 rounded-full bg-[#8B5E3C]/10 text-[#8B5E3C] flex items-center justify-center font-bold text-xs shrink-0">
                           {user.name.charAt(0).toUpperCase()}
                         </div>
                         {user.name}
+                        <RoleBadge role={user.role} />
                         {isYou && (
                           <span className="text-xs bg-[#3D5A3E]/10 text-[#3D5A3E] font-medium px-2 py-0.5 rounded">You</span>
                         )}
@@ -281,7 +310,7 @@ export default function AdminUsersPage() {
                         >
                           Edit
                         </button>
-                        {!isYou && (
+                        {canDelete && (
                           <button
                             onClick={() => handleDelete(user)}
                             className="text-xs font-medium text-red-500 hover:text-red-700 border border-[#E8DDD0] hover:border-red-300 px-3 py-1.5 rounded-lg transition-colors"
@@ -330,6 +359,19 @@ export default function AdminUsersPage() {
                   className={inputCls}
                 />
               </div>
+              {isSuperAdmin && (
+                <div>
+                  <label className="block text-sm font-medium text-[#2C2C2C] mb-1.5">Role</label>
+                  <select
+                    value={editState.role}
+                    onChange={(e) => setEditState({ ...editState, role: e.target.value })}
+                    className={inputCls}
+                  >
+                    <option value="admin">Admin</option>
+                    <option value="superadmin">Super Admin</option>
+                  </select>
+                </div>
+              )}
               <div>
                 <label className="block text-sm font-medium text-[#2C2C2C] mb-1.5">
                   New Password <span className="text-[#8C8277] font-normal">(leave blank to keep current)</span>

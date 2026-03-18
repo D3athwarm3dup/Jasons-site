@@ -2,17 +2,23 @@ import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
 import bcrypt from "bcryptjs";
 
+import { auth } from "@/lib/auth";
+
 // GET /api/users — list all admin users (no password hashes)
 export async function GET() {
   const users = await prisma.adminUser.findMany({
     orderBy: { createdAt: "asc" },
-    select: { id: true, name: true, email: true, createdAt: true },
+    select: { id: true, name: true, email: true, role: true, createdAt: true },
   });
   return NextResponse.json(users);
 }
 
-// POST /api/users — create a new admin user
+// POST /api/users — create a new admin user (superadmin only)
 export async function POST(req: NextRequest) {
+  const session = await auth();
+  if (session?.user?.role !== "superadmin") {
+    return NextResponse.json({ error: "Forbidden" }, { status: 403 });
+  }
   const { name, email, password } = await req.json();
   if (!name || !email || !password) {
     return NextResponse.json({ error: "Name, email and password are required" }, { status: 400 });
@@ -24,7 +30,7 @@ export async function POST(req: NextRequest) {
     const passwordHash = await bcrypt.hash(password, 12);
     const user = await prisma.adminUser.create({
       data: { name, email, passwordHash },
-      select: { id: true, name: true, email: true, createdAt: true },
+      select: { id: true, name: true, email: true, role: true, createdAt: true },
     });
     return NextResponse.json(user, { status: 201 });
   } catch {
