@@ -3,9 +3,10 @@ import { prisma } from "@/lib/prisma";
 
 export async function POST(
   req: NextRequest,
-  { params }: { params: Promise<{ slug: string }> }
+  { params }: { params: Promise<{ id: string }> }
 ) {
-  const { slug } = await params;
+  // The dynamic segment is [id] but we receive a slug — both match any string in the URL
+  const { id: slug } = await params;
 
   let body: { clientName?: unknown; rating?: unknown; comment?: unknown };
   try {
