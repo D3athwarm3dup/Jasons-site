@@ -102,7 +102,8 @@ export default function AdminUsersPage() {
     setEditSaving(true);
     setEditError("");
     try {
-      const body: Record<string, string> = { name: editState.name, email: editState.email, role: editState.role };
+      const body: Record<string, string> = { name: editState.name, email: editState.email };
+      if (isSuperAdmin) body.role = editState.role;
       if (editState.password) body.password = editState.password;
       const res = await fetch(`/api/users/${editState.id}`, {
         method: "PATCH",
