@@ -32,6 +32,8 @@ model Project {
   metaTitle        String?           // custom <title> tag (falls back to title)
   metaDescription  String?           // custom meta description (falls back to description)
   metaKeywords     String?           // comma-separated keywords
+  // Review PIN — clients enter this to unlock the review form on the project page
+  reviewPin        String?
   createdAt        DateTime          @default(now())
   updatedAt        DateTime          @updatedAt
   images           ProjectImage[]

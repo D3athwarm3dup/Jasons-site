@@ -21,7 +21,7 @@ export async function PUT(req: NextRequest, { params }: { params: Promise<{ id: 
   const { id } = await params;
   try {
     const body = await req.json();
-    const { title, description, location, category, completedAt, published, featured, images, metaTitle, metaDescription, metaKeywords } = body;
+    const { title, description, location, category, completedAt, published, featured, images, metaTitle, metaDescription, metaKeywords, reviewPin } = body;
 
     // Delete old images and recreate
     await prisma.projectImage.deleteMany({ where: { projectId: id } });
@@ -39,6 +39,7 @@ export async function PUT(req: NextRequest, { params }: { params: Promise<{ id: 
         metaTitle: metaTitle || null,
         metaDescription: metaDescription || null,
         metaKeywords: metaKeywords || null,
+        reviewPin: reviewPin || null,
         images: {
           create: (images ?? []).map((img: { url: string; alt: string; isPrimary: boolean; role: string; order: number }, i: number) => ({
             url: img.url,

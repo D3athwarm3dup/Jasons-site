@@ -8,14 +8,14 @@ export async function POST(
   // The dynamic segment is [id] but we receive a slug — both match any string in the URL
   const { id: slug } = await params;
 
-  let body: { clientName?: unknown; rating?: unknown; comment?: unknown };
+  let body: { clientName?: unknown; rating?: unknown; comment?: unknown; pin?: unknown };
   try {
     body = await req.json();
   } catch {
     return NextResponse.json({ error: "Invalid JSON" }, { status: 400 });
   }
 
-  const { clientName, rating, comment } = body;
+  const { clientName, rating, comment, pin } = body;
 
   // Validation
   if (typeof clientName !== "string" || clientName.trim().length === 0) {
@@ -31,11 +31,18 @@ export async function POST(
   // Look up the published project by slug
   const project = await prisma.project.findUnique({
     where: { slug, published: true },
-    select: { id: true },
+    select: { id: true, reviewPin: true },
   });
 
   if (!project) {
     return NextResponse.json({ error: "Project not found" }, { status: 404 });
+  }
+
+  // If the project has a PIN, the submitted PIN must match
+  if (project.reviewPin) {
+    if (typeof pin !== "string" || pin.trim() !== project.reviewPin) {
+      return NextResponse.json({ error: "Invalid PIN" }, { status: 403 });
+    }
   }
 
   // Create the Feedback record — approved:false so it goes into the admin queue

@@ -45,6 +45,7 @@ export default async function EditProjectPage({
     metaTitle: project.metaTitle ?? "",
     metaDescription: project.metaDescription ?? "",
     metaKeywords: project.metaKeywords ?? "",
+    reviewPin: project.reviewPin ?? "",
   };
 
   return (

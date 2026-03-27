@@ -28,6 +28,7 @@ interface ProjectFormProps {
     metaTitle?: string;
     metaDescription?: string;
     metaKeywords?: string;
+    reviewPin?: string;
   };
 }
 
@@ -43,6 +44,7 @@ export default function ProjectForm({ initialData }: ProjectFormProps) {
     completedAt: initialData?.completedAt ?? new Date().toISOString().split("T")[0],
     published: initialData?.published ?? false,
     featured: initialData?.featured ?? false,
+    reviewPin: initialData?.reviewPin ?? "",
   });
 
   const [seo, setSeo] = useState({
@@ -105,7 +107,7 @@ export default function ProjectForm({ initialData }: ProjectFormProps) {
       const res = await fetch(url, {
         method,
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ ...form, ...seo, images }),
+        body: JSON.stringify({ ...form, ...seo, images, reviewPin: form.reviewPin || null }),
       });
 
       if (res.ok) {
@@ -242,6 +244,31 @@ export default function ProjectForm({ initialData }: ProjectFormProps) {
               />
               <span className="text-sm text-[#2C2C2C]">Featured (shown first)</span>
             </label>
+          </div>
+
+          {/* Review PIN */}
+          <div className="border-t border-[#E8DDD0] pt-5">
+            <label className="block text-sm font-medium text-[#2C2C2C] mb-1.5">
+              Client Review PIN
+            </label>
+            <div className="flex items-start gap-4">
+              <div className="w-40">
+                <input
+                  type="text"
+                  inputMode="numeric"
+                  pattern="[0-9]*"
+                  maxLength={8}
+                  value={form.reviewPin}
+                  onChange={(e) => setForm({ ...form, reviewPin: e.target.value.replace(/\D/g, "") })}
+                  className="w-full border border-[#E8DDD0] rounded-lg px-4 py-2.5 text-sm font-mono tracking-widest focus:outline-none focus:border-[#8B5E3C]"
+                  placeholder="e.g. 4821"
+                />
+              </div>
+              <p className="text-xs text-[#8C8277] pt-2.5 leading-relaxed">
+                Set a numeric PIN that the client must enter to leave a review on this project page.
+                Share it privately with your client. Leave blank to disable the review button.
+              </p>
+            </div>
           </div>
         </div>
       </div>

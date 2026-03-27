@@ -23,7 +23,7 @@ export async function POST(req: NextRequest) {
 
   try {
     const body = await req.json();
-    const { title, description, location, category, completedAt, published, featured, images, metaTitle, metaDescription, metaKeywords } = body;
+    const { title, description, location, category, completedAt, published, featured, images, metaTitle, metaDescription, metaKeywords, reviewPin } = body;
 
     const baseSlug = slugify(title);
     let slug = baseSlug;
@@ -45,6 +45,7 @@ export async function POST(req: NextRequest) {
         metaTitle: metaTitle || null,
         metaDescription: metaDescription || null,
         metaKeywords: metaKeywords || null,
+        reviewPin: reviewPin || null,
         images: {
           create: (images ?? []).map((img: { url: string; alt: string; isPrimary: boolean; role: string; order: number }, i: number) => ({
             url: img.url,

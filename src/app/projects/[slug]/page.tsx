@@ -6,13 +6,9 @@ import Footer from "@/components/Footer";
 import CTASection from "@/components/CTASection";
 import BeforeAfterSlider from "@/components/BeforeAfterSlider";
 import ProjectGallery from "@/components/ProjectGallery";
+import LeaveAReview from "@/components/LeaveAReview";
 import { prisma } from "@/lib/prisma";
 import { getCategoryLabel, formatDate } from "@/lib/utils";
-// ============================================================
-// LEAVE A REVIEW — uncomment the import below when ready to
-// enable the feature (after Jason adds the first project).
-// ============================================================
-// import LeaveAReview from "@/components/LeaveAReview";
 
 const BASE_URL = process.env.NEXT_PUBLIC_SITE_URL ?? "https://norrisdeckingandheds.com.au";
 
@@ -294,14 +290,10 @@ export default async function ProjectPage({
                   </a>
                 </div>
 
-                {/* ============================================================
-                    LEAVE A REVIEW — commented out until Jason adds first project.
-                    To enable:
-                      1. Uncomment the LeaveAReview import at the top of this file.
-                      2. Uncomment the <LeaveAReview> block below.
-                    ============================================================
-                <LeaveAReview projectSlug={project.slug} />
-                */}
+                {/* LEAVE A REVIEW — shown only if the project has a PIN configured */}
+                {project.reviewPin && (
+                  <LeaveAReview projectSlug={project.slug} />
+                )}
               </div>
             </div>
           </div>
