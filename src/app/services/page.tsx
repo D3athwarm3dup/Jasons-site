@@ -162,7 +162,7 @@ export default async function ServicesPage() {
                       Get a Quote
                     </Link>
                     <Link
-                      href="/projects"
+                      href={`/projects?category=${service.slug === "decks" ? "deck" : "shed"}`}
                       className="border-2 border-[#E8DDD0] hover:border-[#C4936A] text-[#8C8277] hover:text-[#8B5E3C] font-semibold px-6 py-3 rounded text-sm transition-colors"
                     >
                       See Examples
