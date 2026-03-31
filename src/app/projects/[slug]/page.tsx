@@ -237,6 +237,11 @@ export default async function ProjectPage({
                     </div>
                   </div>
                 )}
+
+                {/* Leave a Review banner — full width, visible to project client */}
+                {project.reviewPin && (
+                  <LeaveAReview projectSlug={project.slug} />
+                )}
               </div>
 
               {/* Sidebar */}
@@ -290,10 +295,7 @@ export default async function ProjectPage({
                   </a>
                 </div>
 
-                {/* LEAVE A REVIEW — shown only if the project has a PIN configured */}
-                {project.reviewPin && (
-                  <LeaveAReview projectSlug={project.slug} />
-                )}
+
               </div>
             </div>
           </div>
